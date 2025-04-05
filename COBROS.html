@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Punto Fresas - Cajero</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #f06292;
+      --secondary-color: #fce4ec;
+      --text-color: #3e0d1c;
+      --bg-color: #fff9fb;
+      --accent: #ad1457;
+      --danger-color: #e53935;
+      --radius: 16px;
+      --shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    body.dark {
+      --primary-color: #ec407a;
+      --secondary-color: #3a3a3a;
+      --text-color: #f9f9f9;
+      --bg-color: #1e1e1e;
+      --accent: #f06292;
+      --danger-color: #ff6b6b;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* Mejoras visuales y animaciones */
+    /* Mejoras visuales y animaciones */
+body {
+  background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+  font-family: 'Quicksand', sans-serif;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+body.dark {
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  color: #f9f9f9;
+}
+
+header {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+body.dark header {
+  color: #fff;
+}
+
+h2 {
+  font-size: 3rem;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.subtitulo {
+  font-size: 1.2rem;
+  color: #fff;
+  opacity: 0.9;
+}
+
+form {
+  background-color: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  max-width: 700px;
+  padding: 2rem;
+}
+
+body.dark form {
+  background-color: rgba(58,58,58,0.9);
+}
+
+input, select {
+  border: none;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 0.8rem;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+body.dark input, body.dark select {
+  background-color: #555;
+  color: #fff;
+}
+
+input:focus, select:focus {
+  transform: scale(1.03);
+  outline: none;
+}
+
+button {
+  background-color: #f06292;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  padding: 0.9rem;
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.export-btn {
+  background-color: #4caf50;
+  margin-bottom: 1rem;
+}
+
+.export-btn:hover {
+  background-color: #388e3c;
+}
+
+table {
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+body.dark table {
+  background-color: rgba(58,58,58,0.9);
+  color: #fff;
+}
+
+th, td {
+  padding: 1rem;
+}
+
+thead {
+  background-color: #f06292;
+  color: #fff;
+}
+
+body.dark thead {
+  background-color: #ec407a;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: rgba(255, 224, 233, 0.6);
+}
+
+body.dark tbody tr:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-eliminar {
+  background-color: #e74c3c;
+  transition: background-color 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #c0392b;
+}
+
+.btn-editar {
+  background-color: #2196f3;
+  margin-right: 4px;
+  border: none;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-editar:hover {
+  background-color: #1976d2;
+}
+
+
+.toast {
+  background-color: #333;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+body {
+  background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+  font-family: 'Quicksand', sans-serif;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+header {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+h2 {
+  font-size: 3rem;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.subtitulo {
+  font-size: 1.2rem;
+  color: #fff;
+  opacity: 0.9;
+}
+
+form {
+  background-color: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  max-width: 700px;
+  padding: 2rem;
+}
+
+input, select {
+  border: none;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 0.8rem;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+input:focus, select:focus {
+  transform: scale(1.03);
+  outline: none;
+}
+
+button {
+  background-color: #f06292;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  padding: 0.9rem;
+  color: #fff;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.export-btn {
+  background-color: #4caf50;
+  margin-bottom: 1rem;
+}
+
+.export-btn:hover {
+  background-color: #388e3c;
+}
+
+table {
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+th, td {
+  padding: 1rem;
+}
+
+thead {
+  background-color: #f06292;
+  color: #fff;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: rgba(255, 224, 233, 0.6);
+}
+
+.btn-eliminar {
+  background-color: #e74c3c;
+  transition: background-color 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #c0392b;
+}
+
+.toast {
+  background-color: #333;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Quicksand', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    header {
+      position: relative;
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+    }
+
+    .dark-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.6rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .dark-toggle:hover { transform: rotate(25deg); }
+
+    h2 {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    .subtitulo {
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    form {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    body.dark form { background-color: var(--secondary-color); }
+
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    input[readonly] {
+      background-color: var(--secondary-color);
+    }
+
+    button {
+      grid-column: span 2;
+      padding: 1rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: var(--primary-color);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--accent);
+      transform: scale(1.03);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    }
+
+    .export-btn {
+      margin: 1rem auto;
+      display: block;
+      padding: 0.7rem 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      max-width: 800px;
+      margin: 1rem auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    body.dark table { background-color: var(--secondary-color); }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+    }
+
+    thead {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: var(--secondary-color);
+    }
+
+    .btn-eliminar {
+      background-color: var(--danger-color);
+      border: none;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .btn-eliminar:hover {
+      background-color: #b71c1c;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 999;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="dark-toggle" onclick="toggleDarkMode()" title="Modo Oscuro" id="modoBtn">🌙</button>
+    <h2>Punto Fresas</h2>
+    <div class="subtitulo">FresaLovers</div>
+  </header>
+
+  <form id="form-cobro">
+    <input type="text" id="cliente" placeholder="Nombre del Cliente" required />
+    <input type="text" id="direccion" placeholder="Dirección" required />
+    <input type="text" id="telefono" placeholder="Teléfono" required />
+    <select id="pedido" required>
+      <option value="">Selecciona un pedido</option>
+      <option value="Fresa Clásica">Fresa Clásica</option>
+      <option value="Fresa Cocosette">Fresa Cocosette</option>
+      <option value="Fresa Jet’Gol">Fresa Jet’Gol</option>
+      <option value="Fresa Milo">Fresa Milo</option>
+      <option value="Fresa Oreo">Fresa Oreo</option>
+      <option value="Fresa Masmelo">Fresa Masmelo</option>
+      <option value="Fresa Brownie">Fresa Brownie</option>
+    </select>
+    <input type="text" id="total" placeholder="Total" required readonly />
+    <button type="submit">Agregar Cobro</button>
+  </form>
+
+  <button class="export-btn" onclick="exportarExcel()">Exportar a Excel</button>
+  <button class="export-btn" onclick="generarPDF()">Generar Factura PDF</button>
+  <button class="export-btn" onclick="guardarEnGoogleSheets()">Guardar en Google Sheets</button>
+  
+
+
+  <div id="toast" class="toast">Cobro agregado exitosamente ✅</div>
+
+  <table id="tabla-cobros">
+    <thead>
+      <tr>
+        <th>Nombre del Cliente</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
+        <th>Pedido</th>
+        <th>Subtotal</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+        <tr>
+          <td colspan="4" style="text-align: right; font-weight: bold;">Total:</td>
+          <td id="total-general" colspan="2" style="font-weight: bold;">$0</td>
+        </tr>
+      </tfoot>      
+  </table>
+
+  <script>
+    const cobros = JSON.parse(localStorage.getItem('cobros')) || [];
+    const precios = {
+      'Fresa Clásica': 2500,
+      'Fresa Cocosette': 3000,
+      'Fresa Jet’Gol': 3000,
+      'Fresa Milo': 3000,
+      'Fresa Oreo': 3000,
+      'Fresa Masmelo': 3000,
+      'Fresa Brownie': 3000
+    };
+  
+    const form = document.getElementById('form-cobro');
+    const tabla = document.querySelector('#tabla-cobros tbody');
+    const pedidoInput = document.getElementById('pedido');
+    const totalInput = document.getElementById('total');
+    const modoBtn = document.getElementById('modoBtn');
+    const toast = document.getElementById('toast');
+  
+    // 🌓 Recuperar modo oscuro al iniciar
+    if (localStorage.getItem('modo') === 'dark') {
+      document.body.classList.add('dark');
+      modoBtn.textContent = '☀️';
+    }
+  
+    // 📝 Recuperar cobros al cargar
+    actualizarTabla();
+  
+    pedidoInput.addEventListener('change', () => {
+      const precio = precios[pedidoInput.value] || 0;
+      totalInput.value = `$${precio.toLocaleString('es-CO')}`;
+    });
+  
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const cliente = document.getElementById('cliente').value;
+      const direccion = document.getElementById('direccion').value;
+      const telefono = document.getElementById('telefono').value;
+      const pedido = pedidoInput.value;
+      const total = Number(totalInput.value.replace(/[^\d]/g, ''));
+      cobros.push({ cliente, direccion, telefono, pedido, total });
+      guardarCobros();
+      actualizarTabla();
+      mostrarToast();
+      form.reset();
+      totalInput.value = '';
+    });
+  
+    function actualizarTabla() {
+      tabla.innerHTML = '';
+      let totalGeneral = 0;
+  
+      cobros.forEach((c, i) => {
+        totalGeneral += c.total;
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+          <td>${c.cliente}</td>
+          <td>${c.direccion}</td>
+          <td>${c.telefono}</td>
+          <td>${c.pedido}</td>
+          <td>$${c.total.toLocaleString('es-CO')}</td>
+          <td>
+            <button class="btn-editar" onclick="editarCobro(${i})">Editar</button>
+            <button class="btn-eliminar" onclick="eliminarCobro(${i})">Eliminar</button>
+          </td>
+        `;
+        tabla.appendChild(fila);
+      });
+  
+      document.getElementById('total-general').textContent = `$${totalGeneral.toLocaleString('es-CO')}`;
+    }
+  
+    function eliminarCobro(index) {
+      if (confirm('¿Estás seguro que deseas eliminar este cobro?')) {
+        cobros.splice(index, 1);
+        guardarCobros();
+        actualizarTabla();
+      }
+    }
+  
+    function editarCobro(index) {
+      const nuevoValor = prompt("Ingresa el nuevo subtotal:", cobros[index].total);
+      const valorNumerico = Number(nuevoValor);
+  
+      if (!isNaN(valorNumerico) && valorNumerico > 0) {
+        cobros[index].total = valorNumerico;
+        guardarCobros();
+        actualizarTabla();
+      } else {
+        alert("Por favor ingresa un valor numérico válido.");
+      }
+    }
+  
+    function exportarExcel() {
+      const datosExportar = cobros.map(c => ({
+        Cliente: c.cliente,
+        Dirección: c.direccion,
+        Teléfono: c.telefono,
+        Pedido: c.pedido,
+        Total: c.total
+      }));
+  
+      const totalGeneral = cobros.reduce((acc, c) => acc + c.total, 0);
+      datosExportar.push({ Cliente: 'TOTAL', Total: totalGeneral });
+  
+      const ws = XLSX.utils.json_to_sheet(datosExportar);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Cobros');
+      XLSX.writeFile(wb, 'cobros.xlsx');
+    }
+  
+    async function generarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(14);
+      doc.text("Factura - Punto Fresas", 20, 20);
+      let y = 35;
+      let totalGeneral = 0;
+  
+      cobros.forEach((c, i) => {
+        totalGeneral += c.total;
+        doc.text(`${i + 1}. ${c.cliente}, ${c.pedido}, $${c.total.toLocaleString('es-CO')}`, 20, y);
+        y += 10;
+      });
+  
+      doc.text(`Total General: $${totalGeneral.toLocaleString('es-CO')}`, 20, y + 10);
+      doc.save("factura_fresas.pdf");
+    }
+  
+    function mostrarToast() {
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+  
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const esOscuro = document.body.classList.contains('dark');
+      modoBtn.textContent = esOscuro ? '☀️' : '🌙';
+      localStorage.setItem('modo', esOscuro ? 'dark' : 'light');
+    }
+  
+    function guardarCobros() {
+      localStorage.setItem('cobros', JSON.stringify(cobros));
+    }
+
+    function guardarEnGoogleSheets() {
+  if (cobros.length === 0) {
+    alert("No hay cobros para enviar.");
+    return;
+  }
+
+  fetch('https://script.google.com/macros/s/AKfycbwguFHsdaMlO8g3SBH6yqaclwO5kO0sdROOvrUxGcgd-w0PA1QJfSu-dAOE-jqiALha8g/exec', {
+    method: 'POST',
+    body: JSON.stringify(cobros),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.result === 'success') {
+      alert("¡Datos enviados exitosamente a Google Sheets!");
+    } else {
+      alert("Hubo un error al enviar.");
+    }
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    alert("Error al conectar con Google Sheets.");
+  });
+}
+  </script>
+</body>
+</html>
+
